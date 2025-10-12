@@ -9,7 +9,7 @@ import argparse
 # -------------------------
 # Configuration
 # -------------------------
-DAZ_FOLDERS = ["data", "People", "Props", "Runtime", "Environments", "Scenes", "Templates"]
+DAZ_FOLDERS = ["data", "People", "Props", "Runtime", "Environments", "Scenes"]
 PROMO_EXTS = {".jpg", ".jpeg", ".png", ".gif", ".pdf", ".txt", ".doc", ".docx", ".rtf"}
 
 # -------------------------
