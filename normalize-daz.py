@@ -1,6 +1,7 @@
 import os
 import zipfile
 import rarfile
+import py7zr
 import shutil
 import tempfile
 from pathlib import Path
@@ -11,19 +12,24 @@ import argparse
 # -------------------------
 DAZ_FOLDERS = ["data", "People", "Props", "Runtime", "Environments", "Scenes"]
 PROMO_EXTS = {".jpg", ".jpeg", ".png", ".gif", ".pdf", ".txt", ".doc", ".docx", ".rtf"}
+ARCHIVE_EXTS = {".zip", ".rar", ".7z"} 
 
 # -------------------------
 # Archive Extraction Helpers
 # -------------------------
 def extract_archive(archive_path: Path, dest_dir: Path):
-    """Extract a zip or rar archive into dest_dir."""
+    """Extract a zip, rar, or 7z archive into dest_dir."""
     try:
-        if archive_path.suffix.lower() == ".zip":
+        ext = archive_path.suffix.lower()
+        if ext == ".zip":
             with zipfile.ZipFile(archive_path, 'r') as z:
                 z.extractall(dest_dir)
-        elif archive_path.suffix.lower() == ".rar":
+        elif ext == ".rar":
             with rarfile.RarFile(archive_path, 'r') as r:
                 r.extractall(dest_dir)
+        elif ext == ".7z":
+            with py7zr.SevenZipFile(archive_path, 'r') as z:
+                z.extractall(dest_dir)
         else:
             print(f"⚠️ Skipping unsupported archive: {archive_path}")
             return
@@ -32,12 +38,12 @@ def extract_archive(archive_path: Path, dest_dir: Path):
 
 def extract_all_archives_recursively(root: Path):
     """
-    Recursively extract all .zip and .rar archives under `root`, case-insensitively.
+    Recursively extract all supported archives under `root`, case-insensitively.
     Continues until no archives remain.
     """
     iteration = 0
     while True:
-        archives = [p for p in root.rglob("*") if p.suffix.lower() in (".zip", ".rar")]
+        archives = [p for p in root.rglob("*") if p.suffix.lower() in ARCHIVE_EXTS]
         if not archives:
             print(f"🔍 No more archives found after {iteration} passes.\n")
             break
@@ -53,8 +59,6 @@ def extract_all_archives_recursively(root: Path):
                 print(f"⚠️ Failed to extract nested archive {archive}: {e}")
 
         iteration += 1
-
-
 
 # -------------------------
 # DAZ Root Finder
@@ -253,7 +257,7 @@ def main():
     args = parser.parse_args()
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    archives = [f for f in args.input_dir.iterdir() if f.suffix.lower() in (".zip", ".rar")]
+    archives = [f for f in args.input_dir.iterdir() if f.is_file() and f.suffix.lower() in ARCHIVE_EXTS]
 
     if not archives:
         print("⚠️ No archives found in input directory.")

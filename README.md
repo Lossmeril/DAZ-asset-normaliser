@@ -1,6 +1,6 @@
 # 🧰 DAZ Archive Normalizer
 
-**DAZ Archive Normalizer** is a Python utility that automatically extracts and restructures `.zip` and `.rar` archives containing DAZ Studio assets into a clean, standardized DAZ content folder layout.
+**DAZ Archive Normalizer** is a Python utility that automatically extracts and restructures `.zip`, `.rar` and `.7z` archives containing DAZ Studio assets into a clean, standardized DAZ content folder layout.
 
 It fixes the common problems with DAZ assets downloaded from various sources, such as:
 - inconsistent folder hierarchies (`Runtime`, `People`, `Data` buried several levels deep);
@@ -22,7 +22,7 @@ You can also merge everything directly into a single **Content** folder ready to
 
 ## ⚙️ Features
 
-✅ **Recursive extraction** — automatically unpacks nested `.zip` and `.rar` archives.  
+✅ **Recursive extraction** — automatically unpacks nested `.zip`, `.rar` and `.7z` archives.  
 ✅ **Automatic DAZ root detection** — finds where the main DAZ folders start, even if deeply nested.  
 ✅ **Merge mode** — combine all assets into one DAZ library folder.  
 ✅ **Promo filtering** — skips images and text files unless requested.  
@@ -34,10 +34,12 @@ You can also merge everything directly into a single **Content** folder ready to
 
 - Python 3.9 or newer  
 - `rarfile` module (and `unrar` or `bsdtar` installed system-wide)
+- `py7zr` module
 
 ### Install dependencies
 ```bash
 pip install rarfile
+pip install py7zr
 ```
 
 If `.rar` extraction fails, install the `unrar` tool:
